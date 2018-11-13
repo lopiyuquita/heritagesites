@@ -1,0 +1,30 @@
+{% extends 'heritagesites/base.html' %}
+
+{% block content %}
+<article>
+  <header>
+    <h1>Countries and Areas</h1>
+  </header>
+
+  <!-- WARNING: there is no missing code between <nav>...</nav> -->
+
+  {% include 'heritagesites/pagination.html' %}
+
+
+  {% if  countries %}
+    <ul>
+      {% for country in countries %}
+
+
+    <!-- safe filter on for raw HTML stored in database -->
+    <li><a href="{% url 'country' pk=country.country_area_id %}">{{ country.country_area_name | safe }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No countries are available to view.</p>
+  {% endif %}
+
+  <p>page count: {{ countries.count }}</p>
+</article>
+
+{% endblock content %}}
