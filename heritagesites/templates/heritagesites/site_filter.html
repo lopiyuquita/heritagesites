@@ -1,0 +1,64 @@
+{% extends 'heritagesites/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<article>
+  <header>
+  <div class="row">
+    <div class="col-sm-11">
+      <h3>UNESCO Heritage Sites</h3>
+    </div>
+    <div class="col-sm-1">
+      {% if user.is_authenticated %}
+        <a class="btn btn-outline-secondary" href="{% url 'site_filter' %}">new</a>
+      {% endif %}
+    </div>
+  </div>
+  </header>
+
+
+  <filter>
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="px-2 py-2" style="border:1px solid #8E8D8A;">
+        <form action="" method="get">
+          {{ filter.form|crispy }}
+          <!-- add a submit button -->
+            <button type="submit" class="btn btn-outline-success">Filter</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      {% for site in object_list %}
+        <h4><a href="{% url 'site_detail' site.pk %}">{{ site.site_name | safe }}</a></h4>  <!-- add a link to the detail page -->
+
+        <!-- add the country_area_names and description template tags -->
+      {% if site.country_area.all %}
+        <div class="row">
+
+          <div class="col-sm-12">
+            <p>{% for country in site.country_area.all %}{{ country }} ({{country.iso_alpha3_code}}){% endfor %}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if site.description %}
+        <div class="row">
+          <div class="col-sm-2">
+            <p>Description</p>
+          </div>
+          <div class="col-sm-10">
+            <p>{{ site.description | safe }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+
+      {% empty %}
+      Select one or more filters relevant to your search and then click "filter".
+      {% endfor %}
+    </div>
+  </div>
+  </filter>
+{% endblock content %}

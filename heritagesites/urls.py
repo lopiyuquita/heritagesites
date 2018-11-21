@@ -4,6 +4,7 @@ from . import views
 
 from django.urls import path, re_path
 from . import views
+#from django_filters.views import FilterView
 
 urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
@@ -15,6 +16,7 @@ urlpatterns = [
     path('sites/new/', views.SiteCreateView.as_view(), name='site_new'),
     path('country_area/', views.CountryAreaListView.as_view(), name='countries'),
     path('country_area/<int:pk>/', views.CountryAreaDetailView.as_view(), name='country'),
+    path('site_filter/', views.SiteFilterView.as_view(), name='site_filter'),
 
 ]
 

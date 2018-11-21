@@ -10,16 +10,19 @@ from django.urls import reverse_lazy
 
 from .models import HeritageSite
 from .models import CountryArea
+from .models import HeritageSiteJurisdiction
 from .models import Location
 from .models import Region
 from .models import SubRegion
 from .models import IntermediateRegion
-from .models import HeritageSiteJurisdiction
 from .forms import HeritageSiteForm
+from .filters import HeritageSiteFilter
 
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django_filters.views import FilterView
+
 
 
 
@@ -201,3 +204,7 @@ class SiteDeleteView(generic.DeleteView):
 
 		return HttpResponseRedirect(self.get_success_url())
 
+
+class SiteFilterView(FilterView):
+	filterset_class = HeritageSiteFilter
+	template_name = 'heritagesites/site_filter.html'

@@ -24,10 +24,10 @@
        </div>
      </header>
 
-     {% if site.country_area.all %}
+     <!--{% if site.country_area.all %}
        <div class="row">
          <div class="col-sm-2">
-           <p>Region</p>
+           <p></p>
          </div>
          <div class="col-sm-10">
            {% spaceless %}
@@ -86,8 +86,55 @@
            {% endspaceless %}
          </div>
        </div>
+     {% endif %} -->
 
+
+
+<!--Add new rows for: region, subregion, intermediate region and country/area names -->
+     {% if site.region_names %}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Region</p>
+         </div>
+       <div class="col-sm-10">
+           <p>{{ site.region_names }}</p>
+       </div>
+      </div>
+    {% endif %}
+
+     {% if site.sub_region_names %}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Subregion</p>
+         </div>
+       <div class="col-sm-10">
+           <p>{{ site.sub_region_names }}</p>
+       </div>
+      </div>
      {% endif %}
+
+     {% if site.intermediate_region_names %}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Intermediate Region</p>
+         </div>
+       <div class="col-sm-10">
+           <p>{{ site.intermediate_region_names }}</p>
+       </div>
+      </div>
+     {% endif %}
+
+     {% if site.country_area_names %}
+       <div class="row">
+         <div class="col-sm-2">
+           <p>Country / Area</p>
+         </div>
+       <div class="col-sm-10">
+           <p>{{ site.country_area_names }}</p>
+       </div>
+      </div>
+     {% endif %}
+
 
      {% if site.heritage_site_category.category_name %}
        <div class="row">
@@ -107,7 +154,7 @@
            <p>Description</p>
          </div>
          <div class="col-sm-10">
-           {{ site.description | safe }}
+             <p>{{ site.description | safe }}</p>
            <!-- <p>{{ site.description | safe }}</p> -->
          </div>
        </div>
@@ -159,4 +206,5 @@
          </div>
        </div>
      {% endif %}
+
    {% endblock content %}
