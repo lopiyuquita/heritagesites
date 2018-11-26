@@ -29,8 +29,8 @@ class CountryArea(models.Model):
     country_area_name = models.CharField(unique=True, max_length=100)
     m49_code = models.SmallIntegerField()
     iso_alpha3_code = models.CharField(max_length=3)
-    dev_status = models.ForeignKey('DevStatus', models.DO_NOTHING, blank=True, null=True)
-    location = models.ForeignKey('Location', models.DO_NOTHING, blank=True, null=True)
+    dev_status = models.ForeignKey('DevStatus', on_delete=models.PROTECT, blank=True, null=True)
+    location = models.ForeignKey('Location', on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -104,7 +104,7 @@ class HeritageSite(models.Model):
     longitude = models.DecimalField(max_digits=11, decimal_places=8, blank=True, null=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8, blank=True, null=True)
     area_hectares = models.FloatField(blank=True, null=True)
-    heritage_site_category = models.ForeignKey('HeritageSiteCategory', models.DO_NOTHING)
+    heritage_site_category = models.ForeignKey('HeritageSiteCategory', on_delete=models.PROTECT)
     transboundary = models.IntegerField()
     #Can't do select_related for many-to-many.
     # Intermediate model (country_area -> heritage_site_jurisdiction <- heritage_site)
@@ -296,11 +296,16 @@ class HeritageSiteCategory(models.Model):
         db_table = 'heritage_site_category'
 '''
 
-
+# Change the current argument from argument models.DO_NOTHING to on_delete=models.CASCADE (W 10):
 class HeritageSiteJurisdiction(models.Model):
+    """
+    PK added to satisfy Django requirement.  Both heritage_site and country_area
+    entries will be deleted if corresponding parent record in the heritage_site or country_area
+    table is deleted.  This mirrors CONSTRAINT behavior in the MySQL back-end.
+    """
     heritage_site_jurisdiction_id = models.AutoField(primary_key=True)
-    heritage_site = models.ForeignKey(HeritageSite, models.DO_NOTHING)
-    country_area = models.ForeignKey(CountryArea, models.DO_NOTHING)
+    heritage_site = models.ForeignKey(HeritageSite, on_delete=models.CASCADE)
+    country_area = models.ForeignKey(CountryArea, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -324,7 +329,7 @@ class HeritageSiteJurisdiction(models.Model):
 class IntermediateRegion(models.Model):
     intermediate_region_id = models.AutoField(primary_key=True)
     intermediate_region_name = models.CharField(unique=True, max_length=100)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT)
 
     class Meta:
         managed = False
@@ -352,7 +357,7 @@ class IntermediateRegion(models.Model):
 class Region(models.Model):
     region_id = models.AutoField(primary_key=True)
     region_name = models.CharField(unique=True, max_length=100)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING, blank=True, null=True)
+    planet = models.ForeignKey('Planet', on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -369,7 +374,7 @@ class Region(models.Model):
 class SubRegion(models.Model):
     sub_region_id = models.AutoField(primary_key=True)
     sub_region_name = models.CharField(unique=True, max_length=100)
-    region = models.ForeignKey(Region, models.DO_NOTHING)
+    region = models.ForeignKey(Region, on_delete=models.PROTECT)
 
     class Meta:
         managed = False
@@ -422,10 +427,10 @@ class Location(models.Model):
     New model based on Mtg 5 refactoring of the database.
     """
     location_id = models.AutoField(primary_key=True)
-    planet = models.ForeignKey('Planet', models.DO_NOTHING, blank=True, null=True)
-    region = models.ForeignKey('Region', models.DO_NOTHING, blank=True, null=True)
-    sub_region = models.ForeignKey('SubRegion', models.DO_NOTHING, blank=True, null=True)
-    intermediate_region = models.ForeignKey('IntermediateRegion', models.DO_NOTHING, blank=True, null=True)
+    planet = models.ForeignKey('Planet', on_delete=models.PROTECT, blank=True, null=True)
+    region = models.ForeignKey('Region', on_delete=models.PROTECT, blank=True, null=True)
+    sub_region = models.ForeignKey('SubRegion', on_delete=models.PROTECT, blank=True, null=True)
+    intermediate_region = models.ForeignKey('IntermediateRegion', on_delete=models.PROTECT, blank=True, null=True)
 
 
     class Meta:

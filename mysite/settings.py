@@ -36,18 +36,42 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',     #Added in W10
     'django.contrib.staticfiles',
+
+    # Local
+    'api.apps.ApiConfig',     #Added in W10
     'heritagesites.apps.HeritagesitesConfig',
+
+    # Third-party
     'crispy_forms',
+    'corsheaders',  #Added in W10
     'django_filters',   #Added in W9
+    'rest_framework',   #Added in W10
+    'rest_framework.authtoken',     #Added in W10
+    'allauth',  #Added in W10
+    'allauth.account',  #Added in W10
+    'allauth.socialaccount',    #Added in W10
+    'rest_auth',    #Added in W10
+    'rest_auth.registration',   #Added in W10
+    'rest_framework_swagger',   #Added in W10
     'social_django',
     'test_without_migrations',
+
+
 ]
 
+
+# Per the django-cores-headers project description: 'CorsMiddleware should be placed as high as possible,
+# especially before any middleware that can generate responses such as Django’s CommonMiddleware or Whitenoise’s
+# WhiteNoiseMiddleware. If it is not before, it will not be able to add the CORS headers to these responses.
+# Also if you are using CORS_REPLACE_HTTPS_REFERER it should be placed before Django’s CsrfViewMiddleware . . . .'
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',    #Added in W10
+    'django.middleware.common.CommonMiddleware',    #Added in W10
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    #'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -167,3 +191,39 @@ LOGOUT_REDIRECT_URL = '/'
 
 # django-crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+# Use Django's standard `django.contrib.auth` permissions, or allow read-only access for
+# unauthenticated users.
+# Default Auth: Basic (retired in favor of TokenAuth)
+# Default Auth: SessionAuth (required by browsable API)
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        # 'rest_framework.permissions.AllowAny'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+
+# A list of origin hostnames that are authorized to make cross-site HTTP requests.
+# The value 'null' can also appear in this list, and will match the Origin: null header
+# that is used in “privacy-sensitive contexts”, such as when the client is running from
+# a file:// domain. Defaults to [].
+# Port 3000 is the default port for React apps.
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:3000/'
+)
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SITE_ID = 1
+# Django-allauth uses Django's site framework and requires that a SITE_ID be specified.
+# Registration emails will also be generated but in lieu of setting up an email server,
+# the messages will be directed to the console.
+
